@@ -1,18 +1,14 @@
-let users = [
-  { id: 1, name: "joseph", role: "student" },
-  { id: 2, name: "joan", role: "Teacher" },
-  { id: 3, name: "jack", role: "student" },
-];
+import users from "../models/userModel.js";
 
 //GET
 function getAllUsers(req, res) {
-  const { role } = req.body;
+  // const { role } = req.body;
 
-  if (role) {
-    const filteredUser = users.filter((user = user.role === role));
+  // if (role) {
+  //   const filteredUser = users.filter((user = user.role === role));
 
-    return res.json(filteredUser);
-  }
+  //   return res.json(filteredUser);
+  // }
 
   res.json(users);
 }
@@ -95,15 +91,19 @@ function deleteUser(req, res) {
     });
   }
 
-  const deletedUser = users.splice(userIndex,1)[0]
+  const deletedUser = users.splice(userIndex, 1)[0];
 
-  res.json(deleteUser)
+  res.json(deleteUser);
 }
 
-export{
-    getAllUsers,
-    getUserbyId,
-    createUser,
-    updateUser,
-    deleteUser,
+function testError(req, res, next) {
+  try {
+    throw new Error("Something failed");
+  } catch (error) {
+    next(error);
+  }
 }
+
+
+
+export { getAllUsers, getUserbyId, createUser, updateUser, deleteUser,testError };

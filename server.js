@@ -1,15 +1,12 @@
 import express from "express";
 import usersRouter from "./routes/userRouter.js";
+import {logger, checkAPIKey} from "./Middleware/middle.js"
+import { errorHandler } from "./Middleware/errorHandler.js";
 const app = express();
 const port = 3000;
 
 
 
-function logger(req, res, next) {
-  const now = new Date().toLocaleDateString();
-  console.log(`[${now}] \t ${req.method} \t ${req.url}`);
-  next();
-}
 app.use(logger);
 app.use(express.json());
 
@@ -41,8 +38,14 @@ app.get("/about", (req, res) => {
 //   // res.json(users);
 // });
 
+app.get("/test-error", (req, res, next) => {
+  const error = new Error("Testing the error handler");
 
-app.use("/api/users", usersRouter);
+  next(error);
+});
+
+app.use("/api/users",checkAPIKey, usersRouter);
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
