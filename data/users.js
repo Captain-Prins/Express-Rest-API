@@ -1,0 +1,8 @@
+let users = [
+  { id: 1, name: "joseph", role: "student" },
+  { id: 2, name: "joan", role: "Teacher" },
+  { id: 3, name: "jack", role: "student" },
+];
+
+
+export default users;

@@ -6,7 +6,6 @@ import {
     createUser,
     updateUser,
     deleteUser,
-    testError,
 } from "../Controllers/usersControllers.js";
 
 const router = express.Router();
@@ -21,7 +20,6 @@ router.put("/:id", updateUser);
 
 router.delete("/:id", deleteUser);
 
-router.get("/test=error", testError);
 
 
 

@@ -1,23 +1,30 @@
-import users from "../models/userModel.js";
+import {
+  getsAllUsers,
+  getsUserId,
+  CreateNewUsers,
+  updateUsers,
+  deleted,
+} from "../models/userModel.js";
 
 //GET
 function getAllUsers(req, res) {
-  // const { role } = req.body;
+  const user = getsAllUsers();
 
-  // if (role) {
-  //   const filteredUser = users.filter((user = user.role === role));
+  res.json(user);
 
-  //   return res.json(filteredUser);
-  // }
-
-  res.json(users);
 }
 
 //GET using ID
 function getUserbyId(req, res) {
   const userId = parseInt(req.params.id);
 
-  const user = users.find((user) => user.id === userId);
+  if (Number.isNaN(userId)) {
+    return res.status(400).json({
+      error: "user ID must be a number",
+    });
+  }
+
+  const user = getsUserId(userId);
 
   if (!user) {
     return res.status(404).json({
@@ -37,17 +44,7 @@ function createUser(req, res) {
       error: "name and role are required",
     });
   }
-
-  const newId =
-    users.length > 0 ? Math.max(...users.map((user) => user.id)) + 1 : 1;
-
-  const newUser = {
-    id: newId,
-    name,
-    role,
-  };
-
-  users.push(newUser);
+  const newUser = CreateNewUsers(name, role);
 
   res.status(201).json(newUser);
 }
@@ -55,15 +52,6 @@ function createUser(req, res) {
 //PUT
 function updateUser(req, res) {
   const newId = parseInt(req.params.id);
-
-  const user = users.find((user) => user.id === newId);
-
-  if (!user) {
-    return res.status(404).json({
-      error: "userId not found",
-    });
-  }
-
   const { name, role } = req.body;
 
   if (!name || !role) {
@@ -71,39 +59,39 @@ function updateUser(req, res) {
       error: "name and role are required",
     });
   }
+  const updateduser= updateUsers(newId, name, role)
 
-  user.name = name;
-  user.role = role;
-
-  res.json(user);
-}
-
-//DELETE
-
-function deleteUser(req, res) {
-  const userId = parseInt(req.params.id);
-
-  const userIndex = users.findIndex((user) => user.id === userId);
-
-  if (userIndex === -1) {
+    if (!updateduser) {
     return res.status(404).json({
-      error: "user not found",
+      error: "userId not found",
     });
   }
 
-  const deletedUser = users.splice(userIndex, 1)[0];
+  res.json(updateduser);
+}
+
+//DELETE
+function deleteUser(req, res) {
+  const userId = parseInt(req.params.id);
+
+
+  const deleteUser = deleted(userId);
+
+    if(!deleteUser){
+      return res.status(404).json({
+      error: "user not found",
+    });
+    }
+
 
   res.json(deleteUser);
 }
 
-function testError(req, res, next) {
-  try {
-    throw new Error("Something failed");
-  } catch (error) {
-    next(error);
-  }
-}
 
-
-
-export { getAllUsers, getUserbyId, createUser, updateUser, deleteUser,testError };
+export {
+  getAllUsers,
+  getUserbyId,
+  createUser,
+  updateUser,
+  deleteUser,
+};
