@@ -1,14 +1,20 @@
 import express from "express";
 import usersRouter from "./routes/userRouter.js";
-import {logger, checkAPIKey} from "./Middleware/middle.js"
+import { logger, checkAPIKey } from "./Middleware/middle.js";
 import { errorHandler } from "./Middleware/errorHandler.js";
-import {notFound} from "./middleware/notFound.js";
+import { notFound } from "./middleware/notFound.js";
+import cors from "cors";
 const app = express();
 const port = 3000;
 
-
 //global middleware
 app.use(logger);
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  }),
+);
 app.use(express.json());
 
 //general routes
@@ -31,7 +37,7 @@ app.get("/about", (req, res) => {
 //     }else{
 //       //AND logic
 //       return (!role || user.role===role) &&
-//              (!name || user.name === name)     
+//              (!name || user.name === name)
 //     }
 //   })
 //   res.json(filterUser);
@@ -40,15 +46,13 @@ app.get("/about", (req, res) => {
 // });
 
 //UserRoutes
-app.use("/api/users",checkAPIKey, usersRouter);
-
+app.use("/api/users", usersRouter);
 
 // Unknown route handler
 app.use(notFound);
 
 // Global error handler
 app.use(errorHandler);
-
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
