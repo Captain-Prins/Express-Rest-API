@@ -7,15 +7,18 @@ import {
 } from "../models/userModel.js";
 
 //GET
-function getAllUsers(req, res) {
-  const user = getsAllUsers();
+async function getAllUsers(req, res) {
+  try {
+    const user = await getsAllUsers();
 
-  res.json(user);
-
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
 }
 
 //GET using ID
-function getUserbyId(req, res) {
+async function getUserbyId(req, res) {
   const userId = parseInt(req.params.id);
 
   if (Number.isNaN(userId)) {
@@ -24,7 +27,7 @@ function getUserbyId(req, res) {
     });
   }
 
-  const user = getsUserId(userId);
+  const user = await getsUserId(userId);
 
   if (!user) {
     return res.status(404).json({
@@ -36,7 +39,7 @@ function getUserbyId(req, res) {
 }
 
 //POST
-function createUser(req, res) {
+async function createUser(req, res) {
   const { name, role } = req.body;
 
   if (!name || !role) {
@@ -44,13 +47,13 @@ function createUser(req, res) {
       error: "name and role are required",
     });
   }
-  const newUser = CreateNewUsers(name, role);
+  const newUser = await CreateNewUsers(name, role);
 
   res.status(201).json(newUser);
 }
 
 //PUT
-function updateUser(req, res) {
+async function updateUser(req, res) {
   const newId = parseInt(req.params.id);
   const { name, role } = req.body;
 
@@ -59,9 +62,9 @@ function updateUser(req, res) {
       error: "name and role are required",
     });
   }
-  const updateduser= updateUsers(newId, name, role)
+  const updateduser = await updateUsers(newId, name, role);
 
-    if (!updateduser) {
+  if (!updateduser) {
     return res.status(404).json({
       error: "userId not found",
     });
@@ -71,27 +74,18 @@ function updateUser(req, res) {
 }
 
 //DELETE
-function deleteUser(req, res) {
+async function deleteUser(req, res) {
   const userId = parseInt(req.params.id);
 
+  const deleteUser = await deleted(userId);
 
-  const deleteUser = deleted(userId);
-
-    if(!deleteUser){
-      return res.status(404).json({
+  if (!deleteUser) {
+    return res.status(404).json({
       error: "user not found",
     });
-    }
-
+  }
 
   res.json(deleteUser);
 }
 
-
-export {
-  getAllUsers,
-  getUserbyId,
-  createUser,
-  updateUser,
-  deleteUser,
-};
+export { getAllUsers, getUserbyId, createUser, updateUser, deleteUser };

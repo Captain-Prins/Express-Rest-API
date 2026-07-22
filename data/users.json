@@ -13,5 +13,15 @@
     "id": 3,
     "name": "jack",
     "role": "student"
+  },
+  {
+    "id": 4,
+    "name": "John",
+    "role": "Teacher"
+  },
+  {
+    "id": 5,
+    "name": "Chris",
+    "role": "student"
   }
 ]

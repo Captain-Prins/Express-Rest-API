@@ -10,7 +10,7 @@ function App() {
 
   const loadUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/users");
+      const response = await axios.get("http://localhost:3000/api/users/1");
       setUsers(response.data);
     } catch (err) {
       setError(err.message);
